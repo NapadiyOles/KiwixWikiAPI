@@ -8,8 +8,12 @@
 ],
     "routes": [
     {
-        "src": "/(.*)",
-        "dest": "./bin/www.js"
-    }
+        "src": "/",
+        "dest": "./routes/index.js"
+    },
+        {
+            "src": "/users",
+            "dest": "./routes/users"
+        }
 ]
 }
