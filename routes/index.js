@@ -8,7 +8,7 @@ const url = 'https://library.kiwix.org';
 const getLanguages = async () => {
   try {
     // Step 1: Get Supported Languages
-    const browser = await puppeteer.launch();
+    const browser = await puppeteer.launch({ headless: 'new' });
     const page = await browser.newPage();
     await page.goto(url, { waitUntil: 'domcontentloaded' });
     await page.waitForFunction(() => {
