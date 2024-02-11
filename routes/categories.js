@@ -19,11 +19,11 @@ const waitForBookResults = () => {
 
 const getNumberOfBooks = async (/*Browser*/browser, language = '', category = '') => {
   const page = await browser.newPage();
-  let closing;
+  let /*Promise*/closing;
   const link = `${props.url}/#lang=${language}&category=${category}`;
   console.log(link);
 
-  let content = ''
+  let content = '';
   try {
     await page.goto(link, {waitUntil: 'domcontentloaded'});
     await page.waitForFunction(waitForBookResults);
@@ -43,8 +43,6 @@ const getNumberOfBooks = async (/*Browser*/browser, language = '', category = ''
 }
 
 const getCategories = async (/*Browser*/browser, language = '') => {
-  const categories = {};
-  await browser.newPage();
   const page = await browser.newPage();
   let /*Promise*/closing;
 
@@ -64,6 +62,7 @@ const getCategories = async (/*Browser*/browser, language = '') => {
     closing = page.close();
   }
 
+  const categories = {};
   try {
     const $ = cheerio.load(content);
     await Promise.all($('#categoryFilter option').map(
