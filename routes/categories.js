@@ -69,8 +69,9 @@ const getCategories = async (/*Browser*/browser, language = '') => {
         async (index = 0, category = '') => {
           const id = $(category).attr('value');
           const name = $(category).text().trim();
+
           categories[id] = {
-            name: name,
+            name,
             number_of_books: await getNumberOfBooks(browser, language, id),
           }
         })
@@ -86,16 +87,18 @@ const getCategories = async (/*Browser*/browser, language = '') => {
 }
 
 router.get('/', async (req, res) => {
-  const language = req.query.lang;
   const browser = await puppeteer.launch({headless: 'new'});
 
-  let data = {};
+  const {language} = req.query;
+
+  let data;
   try {
     data = await getCategories(browser, language);
   } catch (error) {
     res.status(500).json({
       message: 'Internal server error occurred while processing data'
     });
+    return;
   } finally {
     await browser.close();
   }

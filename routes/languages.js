@@ -53,13 +53,14 @@ const getLanguages = async (/*Browser*/browser) => {
 router.get('/', async (req, res) => {
   const browser = await puppeteer.launch({headless: 'new'});
 
-  let data = {};
+  let data;
   try {
     data = await getLanguages(browser);
   } catch (error) {
     res.status(500).json({
       message: 'Internal server error occurred while processing data'
     });
+    return;
   } finally {
     await browser.close();
   }
