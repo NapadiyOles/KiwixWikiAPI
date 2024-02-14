@@ -95,15 +95,14 @@ router.get('/', async (req, res) => {
   try {
     data = await getCategories(browser, language);
   } catch (error) {
-    res.status(500).json({
+    return res.status(500).json({
       message: 'Internal server error occurred while processing data'
     });
-    return;
   } finally {
     await browser.close();
   }
 
-  res.json(data);
+  return res.json(data);
 });
 
 module.exports = router;

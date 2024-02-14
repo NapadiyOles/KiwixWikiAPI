@@ -79,15 +79,15 @@ const getBooks = async (/*Browser*/browser, language = '', category = '', search
             const id = $(element).attr('data-id').trim().split(':').pop();
             const title = $(element).find('#book__title').text().trim();
             const description = $(element).find('.book__description').text().trim();
-            const languages = $(element).find('.book__languageTag').attr('title')
-                .split(',').map(lang => lang.trim());
             const link = $(element).find('span[data-link]').attr('data-link');
             const link_values = link.split('/');
-            const name = link_values[link_values.length - 1].split('.').at(0);//.join('.');
+            const name = link_values[link_values.length - 1].slice(0, -4);
             const folder = link_values[link_values.length - 2];
+            const languages = $(element).find('.book__languageTag').attr('title')
+                .split(',').map(lang => lang.trim());
             const tags = [];
             $(element).find('.tag__link').each((_, tag_element = '') => {
-                const tag = $(tag_element).text().trim();
+                const tag = $(tag_element).attr('data-tag');
                 tags.push(tag);
             });
 
@@ -116,33 +116,36 @@ router.get('/', async (req, res) => {
         protocolTimeout: 600_000,
     });
 
-    const {language, category, search, tag} = req.query;
+    const {
+        language = '',
+        category = '',
+        search = '',
+        tag = ''
+    } = req.query;
 
     console.log(`language: ${language}`);
     console.log(`category: ${category}`);
     console.log(`search: ${search}`);
     console.log(`tag: ${tag}`);
 
-    let data = {};
+    let data;
     try {
         data = await getBooks(browser, language, category, search, tag);
     } catch (error) {
         if(error === props.reason) {
-            res.status(404).json({
+            return res.status(404).json({
                 message: props.reason
             });
-            return;
         }
 
-        res.status(500).json({
+        return res.status(500).json({
             message: 'Internal server error occurred while processing data'
         });
-        return;
     } finally {
         await browser.close();
     }
 
-    res.json(data);
+    return res.json(data);
 });
 
 module.exports = router;
